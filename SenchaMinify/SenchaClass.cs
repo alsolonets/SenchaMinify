@@ -1,34 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text;
+using Microsoft.Ajax.Utilities;
 
-namespace SenchaMinify.Library
+namespace SenchaMinify
 {
-    /// <summary>
-    /// Sencha application source file wrapper
-    /// </summary>
-    public class SenchaFileNode
+    public class SenchaClass
     {
-        public enum SortColor { White, Gray, Black };
-
-        /// <summary>
-        /// File content
-        /// </summary>
-        public string Content { get; set; }
-
         /// <summary>
         /// Defined class name
         /// </summary>
-        public string ClassName
-        {
-            get
-            {
-                return _ClassName ?? (_ClassName = GetClassName());
-            }
-        }
-        private string _ClassName;
+        public string ClassName { get; set; }
 
         /// <summary>
         /// Application name (for application files)
@@ -45,18 +28,7 @@ namespace SenchaMinify.Library
         /// <summary>
         /// Gets is current file is application file
         /// </summary>
-        public bool IsApplication
-        {
-            get
-            {
-                if (!_IsApplication.HasValue)
-                {
-                    _IsApplication = GetIsApplication();
-                }
-                return _IsApplication.Value;
-            }
-        }
-        private bool? _IsApplication;
+        public bool IsApplication { get; set; }
 
         /// <summary>
         /// Gets is autoCreateViewport property is true
@@ -132,18 +104,13 @@ namespace SenchaMinify.Library
         private IEnumerable<string> _ModuleProperties;
 
         /// <summary>
-        /// Get a collection of file dependencies. Should be used after FillDependencies call.
+        /// Конфигурационный блок
         /// </summary>
-        public virtual IEnumerable<SenchaFileNode> Dependencies { get; set; }
+        ObjectLiteral ConfigNode { get; set; }
 
-        /// <summary>
-        /// Sorting color. Used by topological sort.
-        /// </summary>
-        public SortColor Color { get; set; }
-
-        public SenchaFileNode()
+        public SenchaClass (ObjectLiteral configNode)
         {
-            this.Color = SortColor.White;
+            this.ConfigNode = configNode;
         }
 
         /// <summary>
@@ -153,30 +120,32 @@ namespace SenchaMinify.Library
         /// <returns></returns>
         protected virtual IEnumerable<string> GetDependencyClasses(string propertyName)
         {
-            var regex = new Regex(
-                propertyName + @"\s*:\s*" +
-                @"(" +
-                @"['""](?<single>[\w\S]+?)['""]" +
-                @"|" +
-                @"\[\s*(['""](?<array>[\w\S]+?)['""]\s*,?\s*)*\s*\]" +
-                @")",
-                RegexOptions.Singleline
-            );
+            var property = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
+                .Where(p => p.Name.Name == propertyName)
+                .FirstOrDefault();
 
-            var match = regex.Match(Content);
-            if (match.Success)
+            if (property == null)
             {
-                if (match.Groups["single"].Success)
+                yield break;
+            }
+            else if (property.Value is ArrayLiteral)
+            {
+                var arr = property.Value as ArrayLiteral;
+                foreach (var nodes in arr.Children.OfType<AstNodeList>())
                 {
-                    yield return match.Groups["single"].Value;
-                }
-                else if (match.Groups["array"].Success)
-                {
-                    foreach (Capture capture in match.Groups["array"].Captures)
+                    foreach (var node in nodes.OfType<ConstantWrapper>())
                     {
-                        yield return capture.Value;
+                        yield return node.Value.ToString();
                     }
                 }
+            }
+            else if (property.Value is ConstantWrapper)
+            {
+                yield return (property.Value as ConstantWrapper).ToString();
+            }
+            else
+            {
+                yield break;
             }
         }
 
@@ -212,54 +181,17 @@ namespace SenchaMinify.Library
         }
 
         /// <summary>
-        /// Get defined class name
-        /// </summary>
-        /// <returns>Defined class name if search was successfull, otherwise null</returns>
-        protected virtual string GetClassName()
-        {
-            var regex = new Regex(@"Ext\.define\(['""](?<classname>[\w\S]+?)['""]", RegexOptions.Singleline);
-            var match = regex.Match(Content);
-            if (match.Success)
-            {
-                return match.Groups["classname"].Value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Get the value of 'name' config. Used for application.
         /// </summary>
         /// <returns>Application name if search was successfull, otherwise null</returns>
         protected virtual string GetApplicationName()
         {
-            var regex = new Regex(
-                @"name\s*:\s*" +
-                @"['""](?<single>[\w\S]+?)['""]",
-                RegexOptions.Singleline
-            );
+            var result = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
+                .Where(p => p.Name.Name == "name")
+                .Select(p => p.Value.ToString())
+                .FirstOrDefault();
 
-            var match = regex.Match(Content);
-            if (match.Success)
-            {
-                return match.Groups["single"].Value;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Check is current file is an application file
-        /// </summary>
-        /// <returns>True if current file is application file, otherwise false</returns>
-        protected virtual bool GetIsApplication()
-        {
-            var regex = new Regex(@"Ext\.application", RegexOptions.Singleline);
-            return regex.IsMatch(Content);
+            return result;
         }
 
         /// <summary>
@@ -268,8 +200,13 @@ namespace SenchaMinify.Library
         /// <returns>Value of 'autoCreateViewport' property is true, or false if property not found.</returns>
         protected virtual bool GetAutoCreateViewport()
         {
-            var regex = new Regex(@"autoCreateViewport\s*:\s*true", RegexOptions.Singleline);
-            return regex.IsMatch(Content);
+            var result = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
+                .Where(p => p.Name.Name == "autoCreateViewport")
+                .Select(p => p.Value)
+                .Select(val => val.Context.Code == "true") // very sensitive :(
+                .FirstOrDefault();
+
+            return result;
         }
 
         /// <summary>
@@ -325,15 +262,6 @@ namespace SenchaMinify.Library
             {
                 return String.Format("{0}.{1}.{2}", ns, module, className);
             }
-        }
-
-        /// <summary>
-        /// Fills the Dependencies collection using DependencyClasses
-        /// </summary>
-        /// <param name="allFiles">All files in the bundle</param>
-        public virtual void FillDependencies(IEnumerable<SenchaFileNode> allFiles)
-        {
-            Dependencies = allFiles.Where(f => this.DependencyClasses.Any(dc => dc == f.ClassName));
         }
 
         /// <summary>

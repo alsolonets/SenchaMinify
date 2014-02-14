@@ -48,9 +48,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SenchaMinify.Library\SenchaMinify.Library.csproj">
+    <ProjectReference Include="..\SenchaMinify\SenchaMinify.csproj">
       <Project>{c82e4e44-597d-4798-8693-5d9012968fef}</Project>
-      <Name>SenchaMinify.Library</Name>
+      <Name>SenchaMinify</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

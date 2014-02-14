@@ -20,7 +20,6 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -122,9 +121,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -205,7 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
@@ -217,12 +215,6 @@
   <ItemGroup>
     <Content Include="Scripts\extjs4-mvc-complex-dashboard\example.json" />
     <Content Include="Scripts\extjs4-mvc-complex-dashboard\readme.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SenchaMinify.Web\SenchaMinify.Web.csproj">
-      <Project>{18cee5b2-c8e0-45c9-b2d0-ce3acd569fe6}</Project>
-      <Name>SenchaMinify.Web</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\arrayGrid\arrayGrid.xds" />
@@ -239,6 +231,12 @@
   <ItemGroup>
     <Content Include="Scripts\mvc-portal\example.json" />
     <Content Include="Scripts\mvc-portal\readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SenchaMinify\SenchaMinify.csproj">
+      <Project>{c82e4e44-597d-4798-8693-5d9012968fef}</Project>
+      <Name>SenchaMinify</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

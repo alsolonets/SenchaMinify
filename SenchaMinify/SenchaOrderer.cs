@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SenchaMinify.Library
+namespace SenchaMinify
 {
     public class SenchaOrderer
     {
@@ -14,27 +14,27 @@ namespace SenchaMinify.Library
         /// <param name="node">File to start from</param>
         /// <param name="resolved">Collection of resolved files</param>
         protected virtual void DependencyResolve<TNode>(TNode node, IList<TNode> resolved)
-            where TNode: SenchaFileNode
+            where TNode: SenchaFile
         {
-            node.Color = SenchaFileNode.SortColor.Gray;
+            node.Color = SenchaFile.SortColor.Gray;
 
             foreach (TNode dependency in node.Dependencies)
             {
-                if (dependency.Color == SenchaFileNode.SortColor.White)
+                if (dependency.Color == SenchaFile.SortColor.White)
                 {
                     DependencyResolve(dependency, resolved);
                 }
-                else if (dependency.Color == SenchaFileNode.SortColor.Gray)
+                else if (dependency.Color == SenchaFile.SortColor.Gray)
                 {
                     throw new InvalidOperationException(String.Format(
                         "Circular dependency detected: '{0}' -> '{1}'", 
-                        node.ClassName ?? String.Empty, 
-                        dependency.ClassName ?? String.Empty)
+                        node.FullName ?? String.Empty, 
+                        dependency.FullName ?? String.Empty)
                     );
                 }
             }
 
-            node.Color = SenchaFileNode.SortColor.Black;
+            node.Color = SenchaFile.SortColor.Black;
             resolved.Add(node);
         }
 
@@ -43,8 +43,8 @@ namespace SenchaMinify.Library
         /// </summary>
         /// <param name="files">SenchaFileInfo wrappers</param>
         /// <returns>Ordered SenchaFileInfo wrappers</returns>
-        public virtual IEnumerable<TNode> OrderSenchaFiles<TNode>(IEnumerable<TNode> files)
-            where TNode: SenchaFileNode
+        public virtual IEnumerable<TNode> OrderFiles<TNode>(IEnumerable<TNode> files)
+            where TNode: SenchaFile
         {
             // Fill dependencies for each wrapper
             files.ToList().ForEach(ef => ef.FillDependencies(files));
@@ -54,14 +54,14 @@ namespace SenchaMinify.Library
             IList<TNode> resolved = new List<TNode>();
 
             TNode startNode = unresolved
-                .Where(ef => ef.Color == SenchaFileNode.SortColor.White)
+                .Where(ef => ef.Color == SenchaFile.SortColor.White)
                 .FirstOrDefault();
 
             while (startNode != null)
             {
                 DependencyResolve(startNode, resolved);
                 startNode = unresolved
-                    .Where(ef => ef.Color == SenchaFileNode.SortColor.White)
+                    .Where(ef => ef.Color == SenchaFile.SortColor.White)
                     .FirstOrDefault();
             }
 

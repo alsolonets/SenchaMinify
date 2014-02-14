@@ -1,6 +1,6 @@
 ﻿using System.Web;
 using System.Web.Optimization;
-using SenchaMinify.Web;
+using SenchaMinify;
 
 namespace SenchaMinify.Demo
 {

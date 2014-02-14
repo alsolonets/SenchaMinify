@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.Optimization;
 using Microsoft.Ajax.Utilities;
 
-namespace SenchaMinify.Web
+namespace SenchaMinify
 {
     public class SenchaBundle : ScriptBundle
     {
