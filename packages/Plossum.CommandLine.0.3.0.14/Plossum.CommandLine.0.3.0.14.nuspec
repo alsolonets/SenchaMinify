@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Plossum.CommandLine</id>
+    <version>0.3.0.14</version>
+    <title>Plossum CommandLine</title>
+    <authors>Peter Palotas</authors>
+    <owners>Peter Palotas</owners>
+    <projectUrl>http://www.codeproject.com/KB/recipes/plossum_commandline.aspx</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Powerful and simple command line parsing in C#</description>
+    <summary>Powerful and simple command line parsing in C#</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>CommandLine</tags>
+    <dependencies>
+      <dependency id="C5" version="1.0.2.0" />
+    </dependencies>
+  </metadata>
+</package>

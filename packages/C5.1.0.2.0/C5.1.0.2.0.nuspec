@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>C5</id>
+    <version>1.0.2.0</version>
+    <title>C5 Collections</title>
+    <authors>Niels Kokholm and Peter Sestoft</authors>
+    <owners>Niels Kokholm and Peter Sestoft</owners>
+    <projectUrl>http://www.itu.dk/research/c5/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>C5 provides functionality and data structures not provided by the standard .Net System.Collections.Generic namespace, such as persistent tree data structures, heap based priority queues, hash indexed array lists and linked lists, and events on collection changes. Also, it is more comprehensive than collection class libraries on other similar platforms, such as Java. Unlike many other collection class libraries, C5 is designed with a strict policy of supporting "code to interface not implementation".</description>
+    <summary>C5 is a library of generic collection classes for C# and other CLI languages and works with Microsoft .Net version 2.0 and later, and Mono version 2 and later.</summary>
+    <tags>Collections</tags>
+  </metadata>
+</package>

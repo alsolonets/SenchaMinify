@@ -13,7 +13,6 @@ namespace SenchaMinify
     /// </summary>
     public class SenchaFile
     {
-
         public enum SortColor { White, Gray, Black };
 
         /// <summary>

@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenchaMinify.Console", "SenchaMinify.Console\SenchaMinify.Console.csproj", "{38DA6275-891A-49CB-BB40-390249274B2F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenchaMinify.Tests", "SenchaMinify.Tests\SenchaMinify.Tests.csproj", "{C11AD10C-AD7E-498A-A44B-A53E2AAC5E38}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenchaMinify", "SenchaMinify\SenchaMinify.csproj", "{C82E4E44-597D-4798-8693-5D9012968FEF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenchaMinify.Demo", "SenchaMinify.Demo\SenchaMinify.Demo.csproj", "{301A2D49-6398-4CD8-9CC5-45657C46E4BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SenchaMinify.Cmd", "SenchaMinify.Cmd\SenchaMinify.Cmd.csproj", "{D084CCB1-0DEA-429E-B457-2793788923DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{38DA6275-891A-49CB-BB40-390249274B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38DA6275-891A-49CB-BB40-390249274B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38DA6275-891A-49CB-BB40-390249274B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38DA6275-891A-49CB-BB40-390249274B2F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C11AD10C-AD7E-498A-A44B-A53E2AAC5E38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C11AD10C-AD7E-498A-A44B-A53E2AAC5E38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C11AD10C-AD7E-498A-A44B-A53E2AAC5E38}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{301A2D49-6398-4CD8-9CC5-45657C46E4BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{301A2D49-6398-4CD8-9CC5-45657C46E4BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{301A2D49-6398-4CD8-9CC5-45657C46E4BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D084CCB1-0DEA-429E-B457-2793788923DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D084CCB1-0DEA-429E-B457-2793788923DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D084CCB1-0DEA-429E-B457-2793788923DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D084CCB1-0DEA-429E-B457-2793788923DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -46,11 +46,13 @@ namespace SenchaMinify
         public virtual IEnumerable<TNode> OrderFiles<TNode>(IEnumerable<TNode> files)
             where TNode: SenchaFile
         {
+            var filelist = files.ToList();
+
             // Fill dependencies for each wrapper
-            files.ToList().ForEach(ef => ef.FillDependencies(files));
-            
+            filelist.ForEach(ef => ef.FillDependencies(filelist));
+
             // Resolving dependencies
-            IList<TNode> unresolved = files.ToList();
+            IList<TNode> unresolved = filelist;
             IList<TNode> resolved = new List<TNode>();
 
             TNode startNode = unresolved
@@ -63,6 +65,7 @@ namespace SenchaMinify
                 startNode = unresolved
                     .Where(ef => ef.Color == SenchaFile.SortColor.White)
                     .FirstOrDefault();
+
             }
 
             return resolved;
