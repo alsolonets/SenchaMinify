@@ -18,5 +18,10 @@ namespace SenchaMinify.Cmd
         {
             this.File = file;
         }
+
+        public override string ToString()
+        {
+            return File.Name;
+        }
     }
 }

@@ -49,14 +49,14 @@ namespace SenchaMinify
         /// <summary>
         /// Gets a collection of dependency class names for this source file
         /// </summary>
-        public IEnumerable<string> DependencyClasses
+        public IEnumerable<string> DependencyClassNames
         {
             get
             {
-                return _DependencyClasses ?? (_DependencyClasses = GetDependencyClasses());
+                return _DependencyClassNames ?? (_DependencyClassNames = GetDependencyClassNames());
             }
         }
-        private IEnumerable<string> _DependencyClasses;
+        private IEnumerable<string> _DependencyClassNames;
 
         /// <summary>
         /// Gets or sets a collection of known configuration dependency properties
@@ -153,7 +153,7 @@ namespace SenchaMinify
         /// Get dependency class names for all known dependency properties
         /// </summary>
         /// <returns>Dependency class names</returns>
-        protected virtual IEnumerable<string> GetDependencyClasses()
+        protected virtual IEnumerable<string> GetDependencyClassNames()
         {
             foreach (var property in DependencyProperties)
             {
@@ -225,9 +225,12 @@ namespace SenchaMinify
         /// Same thing about 'models', 'views', 'stores':
         /// Ext.define('MyApp.controller.MyController', {
         ///     views: [
-        ///         'MyView1',              // -> 'MyApp.view.MyView1'
-        ///         'sub.View2',            // -> 'MyApp.view.sub.View2'
-        ///         'MyApp.view.MyView3'    // -> 'MyApp.view.MyView3'
+        ///         'MyView1',                      // -> 'MyApp.view.MyView1'
+        ///         'sub.MyView2',                  // -> 'MyApp.view.sub.MyView2'
+        ///         'MyApp.view.MyView3',           // -> 'MyApp.view.MyView3'
+        ///         'MyApp.SubApp.view.MyView4',    // -> 'MyApp.SubApp.view.MyView4'
+        ///         'MyApp.view.sub.MyView5',       // -> 'MyApp.view.sub.MyView5'
+        ///         'OtherApp.view.View6',          // -> 'OtherApp.view.View6'
         ///     ]
         ///     // ...
         /// });
@@ -235,12 +238,11 @@ namespace SenchaMinify
         /// <returns></returns>
         protected virtual string GetFullClassName(string module, string className)
         {
-            string ns; // namespace
+            string ns; // this class' namespace
             if (this.IsApplication)
             {
                 if (String.IsNullOrEmpty(ApplicationName))
                 {
-                    System.Diagnostics.Debug.WriteLine("Cannot find application name");
                     return className;
                 }
                 else
@@ -253,13 +255,19 @@ namespace SenchaMinify
                 ns = this.ClassName.Split('.').First();
             }
 
-            // Check if className already full
             if (className.StartsWith(ns + '.'))
             {
+                // className is already full and has same namespace ('MyApp.view.MyView3', ...)
+                return className;
+            }
+            else if (className.IndexOf('.' + module + '.') > 0) 
+            {
+                // className is already full and located in another namespace ('OtherApp.view.View6')
                 return className;
             }
             else
             {
+                // className is short ('MyView1', 'sub.MyView2'). Prepending the namespace.
                 return String.Format("{0}.{1}.{2}", ns, module, className);
             }
         }

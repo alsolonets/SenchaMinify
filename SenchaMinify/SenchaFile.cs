@@ -150,9 +150,22 @@ namespace SenchaMinify
             Dependencies = allFiles
                 .Where(f => f.Classes
                     .Select(c => c.ClassName)
-                    .Intersect(this.Classes.SelectMany(tc => tc.DependencyClasses))
+                    .Intersect(this.Classes.SelectMany(tc => tc.DependencyClassNames))
                     .Any()
                 );
+#if DEBUG
+            var notFoundDependencies = this.Classes
+                .SelectMany(c => c.DependencyClassNames)
+                .Where(c => !allFiles.SelectMany(f => f.Classes.Select(fc => fc.ClassName)).Contains(c))
+                .Where(cn => !cn.StartsWith("Ext"))
+                .ToList();
+
+            if (notFoundDependencies.Count > 0)
+            {
+                string notFound = String.Join(", ", notFoundDependencies);
+                System.Diagnostics.Debug.WriteLine("SenchaMinify. {0}: Cannot find dependency files: {1}", this.ToString(), notFound);
+            }
+#endif
         }
     }
 }

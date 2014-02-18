@@ -24,5 +24,10 @@ namespace SenchaMinify
         {
             this.File = file;
         }
+
+        public override string ToString()
+        {
+            return File.VirtualFile.Name;
+        }
     }
 }
