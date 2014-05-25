@@ -38,3 +38,8 @@ public class BundleConfig
 <script src="@Url.Content("~/bundles/my-sencha-app")" type="text/javascript"></script>
 ```
 
+## Installation
+NuGet:
+```
+Install-Package SenchaMinify
+```
