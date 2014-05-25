@@ -1,11 +1,10 @@
-# About
+## About
 
 This library allows you minify ExtJS and Sencha Touch files using ASP.NET MVC engine on-the-fly.
 
-# Usage
+## Usage
 
----
-###Global.asax
+####Global.asax
 ```c#
 protected void Application_Start()
 {
@@ -14,9 +13,8 @@ protected void Application_Start()
 }
 ```
 
----
 
-###BundleConfig.cs
+####BundleConfig.cs
 ```c#
 using SenchaMinify;
 
@@ -34,10 +32,9 @@ public class BundleConfig
 
 ```
 
----
 
-**Index.cshtml**
-```html
+####Index.cshtml
+```razor
 <script src="@Url.Content("~/bundles/my-sencha-app")" type="text/javascript"></script>
 ```
 
