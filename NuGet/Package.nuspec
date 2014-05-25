@@ -7,19 +7,18 @@
     <authors>Alexey Solonets</authors>
     <owners></owners>
     <description>
-Library that allows you to use minified version of your ExtJS or Sencha Touch application. Adds new SenchaBundle class that should be added to the BundleConfig of an ASP.NET MVC application.
+      ExtJS and Sencha Touch application minification library. Allows to automate minification using ASP.NET MVC engine.
     </description>
     <releaseNotes>
     </releaseNotes>
     <summary>
-      Sencha application minification library.
+      Sencha application minification library
     </summary>
     <language>en-US</language>
-    <projectUrl>https://nuget.org/packages/NuGet</projectUrl>
-    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <projectUrl>https://github.com/alexeysolonets/SenchaMinify</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>http://opensource.org/licenses/Apache-2.0</licenseUrl>
-    <copyright>Copyright  2014</copyright>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <copyright>Copyright 2014 Alexey Solonets</copyright>
     <dependencies>
         <group targetFramework="net40">
           <dependency id="WebGrease" version="1.6" />
@@ -31,6 +30,9 @@ Library that allows you to use minified version of your ExtJS or Sencha Touch ap
     <tags>sencha extjs minify minification scriptbundle</tags>
   </metadata>
   <files>
-    <file src="..\SenchaMinify\bin\Release\SenchaMinify.dll" target="lib\net40" />
+    <file src="..\SenchaMinify\bin\Debug\SenchaMinify.dll" target="lib\net40\Debug" />
+    <file src="..\SenchaMinify\bin\Debug\SenchaMinify.pdb" target="lib\net40\Debug" />    
+    <file src="..\SenchaMinify\bin\Release\SenchaMinify.dll" target="lib\net40\Release" />
+    <file src="..\SenchaMinify\bin\Release\SenchaMinify.pdb" target="lib\net40\Release" />
   </files>
 </package>
