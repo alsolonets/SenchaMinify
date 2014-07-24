@@ -71,7 +71,10 @@ namespace SenchaMinify.Cmd
             // Writing ordered files to console
             if (options.Sort)
             {
-                ordered.ForEach(f => Console.WriteLine(f.FullName));
+                ordered.ForEach(f =>
+                {
+                    Console.WriteLine(f.File.FullName);
+                });
             }
 
             // Minification and concatenation
@@ -191,7 +194,7 @@ namespace SenchaMinify.Cmd
                 ShowParseException(parser, e.Message);
                 outErrorCode = -1;
             }
-            
+
             return outErrorCode == 0;
         }
 
