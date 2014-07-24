@@ -33,18 +33,18 @@ namespace SenchaMinify
         /// <summary>
         /// Gets is autoCreateViewport property is true
         /// </summary>
-        public bool AutoCreateViewport
+        public string AutoCreateViewport
         {
             get
             {
-                if (!_AutoCreateViewport.HasValue)
+                if (String.IsNullOrEmpty(_AutoCreateViewport))
                 {
                     _AutoCreateViewport = GetAutoCreateViewport();
                 }
-                return _AutoCreateViewport.Value;
+                return _AutoCreateViewport;
             }
         }
-        private bool? _AutoCreateViewport;
+        private string _AutoCreateViewport;
 
         /// <summary>
         /// Gets a collection of dependency class names for this source file
@@ -174,9 +174,9 @@ namespace SenchaMinify
                 }
             }
 
-            if (this.IsApplication && this.AutoCreateViewport)
+            if (this.IsApplication && !String.IsNullOrEmpty(this.AutoCreateViewport))
             {
-                yield return GetFullClassName("view", "Viewport");
+                yield return this.AutoCreateViewport == "true" ? GetFullClassName("view", "Viewport") : this.AutoCreateViewport;
             }
         }
 
@@ -198,13 +198,23 @@ namespace SenchaMinify
         /// Get the value of 'autoCreateViewport' propetry. Used for application.
         /// </summary>
         /// <returns>Value of 'autoCreateViewport' property is true, or false if property not found.</returns>
-        protected virtual bool GetAutoCreateViewport()
+        protected virtual string GetAutoCreateViewport()
         {
-            var result = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
+            var value = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
                 .Where(p => p.Name.Name == "autoCreateViewport")
                 .Select(p => p.Value)
-                .Select(val => val.Context.Code == "true") // very sensitive :(
                 .FirstOrDefault();
+
+            string result = null;
+
+            if (value is ConstantWrapper)
+            {
+                result = ((ConstantWrapper)value).Value.ToString();
+            }
+            else if (value != null)
+            {
+                result = value.Context.Code;
+            }
 
             return result;
         }

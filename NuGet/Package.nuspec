@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>SenchaMinify</id>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <title>SenchaMinify</title>
     <authors>Alexey Solonets</authors>
     <owners></owners>
@@ -10,6 +10,7 @@
       ExtJS and Sencha Touch application minification library. Allows to automate minification using ASP.NET MVC engine.
     </description>
     <releaseNotes>
+      Added support for Ext JS 5
     </releaseNotes>
     <summary>
       Sencha application minification library
