@@ -68,6 +68,7 @@ namespace SenchaMinify
                 return _DependencyProperties ?? (_DependencyProperties = new string[] 
                 { 
                     "extend",
+                    "override",
                     "mixins",
                     "requires",
                     "model"
@@ -108,7 +109,7 @@ namespace SenchaMinify
         /// </summary>
         ObjectLiteral ConfigNode { get; set; }
 
-        public SenchaClass (ObjectLiteral configNode)
+        public SenchaClass(ObjectLiteral configNode)
         {
             this.ConfigNode = configNode;
         }
@@ -120,6 +121,11 @@ namespace SenchaMinify
         /// <returns></returns>
         protected virtual IEnumerable<string> GetDependencyClasses(string propertyName)
         {
+            if (ConfigNode == null)
+            {
+                yield break;
+            }
+
             var property = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
                 .Where(p => p.Name.Name == propertyName)
                 .FirstOrDefault();
@@ -137,6 +143,21 @@ namespace SenchaMinify
                     {
                         yield return node.Value.ToString();
                     }
+                }
+            }
+            else if (property.Value is ObjectLiteral)
+            {
+                /**
+                 * Exclusively for mixins defined as object:
+                 * mixins: {
+                 *      observable: 'Ext.mixin.Observable',
+                 *      responsive: 'Ext.mixin.Responsive'
+                 * }
+                 */
+                var obj = property.Value as ObjectLiteral;
+                foreach (var prop in obj.Properties.OfType<ObjectLiteralProperty>().Where(p => p.IsConstant))
+                {
+                    yield return prop.Value.ToString();
                 }
             }
             else if (property.Value is ConstantWrapper)
@@ -176,7 +197,14 @@ namespace SenchaMinify
 
             if (this.IsApplication && !String.IsNullOrEmpty(this.AutoCreateViewport))
             {
-                yield return this.AutoCreateViewport == "true" ? GetFullClassName("view", "Viewport") : this.AutoCreateViewport;
+                if (this.AutoCreateViewport == "true") 
+                {
+                    yield return GetFullClassName("view", "Viewport");
+                }
+                else if (this.AutoCreateViewport != "false")
+                {
+                    yield return this.AutoCreateViewport;
+                }
             }
         }
 
@@ -186,6 +214,11 @@ namespace SenchaMinify
         /// <returns>Application name if search was successfull, otherwise null</returns>
         protected virtual string GetApplicationName()
         {
+            if (ConfigNode == null)
+            {
+                return null;
+            }
+
             var result = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
                 .Where(p => p.Name.Name == "name")
                 .Select(p => p.Value.ToString())
@@ -197,9 +230,14 @@ namespace SenchaMinify
         /// <summary>
         /// Get the value of 'autoCreateViewport' propetry. Used for application.
         /// </summary>
-        /// <returns>Value of 'autoCreateViewport' property is true, or false if property not found.</returns>
+        /// <returns>Value of 'autoCreateViewport' property, or null if property not found.</returns>
         protected virtual string GetAutoCreateViewport()
         {
+            if (ConfigNode == null)
+            {
+                return null;
+            }
+
             var value = ConfigNode.Properties.OfType<ObjectLiteralProperty>()
                 .Where(p => p.Name.Name == "autoCreateViewport")
                 .Select(p => p.Value)
@@ -270,7 +308,7 @@ namespace SenchaMinify
                 // className is already full and has same namespace ('MyApp.view.MyView3', ...)
                 return className;
             }
-            else if (className.IndexOf('.' + module + '.') > 0) 
+            else if (className.IndexOf('.' + module + '.') > 0)
             {
                 // className is already full and located in another namespace ('OtherApp.view.View6')
                 return className;

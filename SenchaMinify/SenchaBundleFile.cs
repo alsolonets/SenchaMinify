@@ -9,7 +9,7 @@ using System.Web.Optimization;
 namespace SenchaMinify
 {
     /// <summary>
-    /// Sencha bundle file
+    /// Bundle file wrapper
     /// </summary>
     public class SenchaBundleFile : SenchaFile
     {

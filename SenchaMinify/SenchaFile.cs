@@ -83,17 +83,33 @@ namespace SenchaMinify
         }
 
         public SenchaFile(FileInfo file)
-            :this()
+            :this(GetContent(file))
         {
-            this.Content = File.ReadAllText(file.FullName);
+        
         }
 
         public SenchaFile(BundleFile file)
-            :this()
+            :this(GetContent(file))
+        {
+        
+        }
+
+        /// <summary>
+        /// Returns content from a regular file
+        /// </summary>
+        protected static string GetContent(FileInfo file)
+        {
+            return File.ReadAllText(file.FullName);
+        }
+
+        /// <summary>
+        /// Returns content from a bundle file
+        /// </summary>
+        protected static string GetContent(BundleFile file)
         {
             using (var sr = new StreamReader(file.VirtualFile.Open()))
             {
-                this.Content = sr.ReadToEnd();
+                return sr.ReadToEnd();
             }
         }
 
@@ -116,12 +132,15 @@ namespace SenchaMinify
             var extApps = this.RootBlock.OfType<CallNode>()
                 .Where(cn => cn.Children.Any())
                 .Where(cn => cn.Children.First().Context.Code == "Ext.application")
+                .Where(cn => cn.Arguments.Take(1).OfType<ObjectLiteral>().Any()) // only apps with a config object
                 .Select(cn => cn.Arguments.OfType<ObjectLiteral>().First())
-                .Select(arg => new SenchaClass(arg) { IsApplication = true });
+                .Select(config => new SenchaClass(config) 
+                { 
+                    IsApplication = true 
+                });
 
             var extDefines = this.RootBlock.OfType<CallNode>()
-                .Where(cn => cn.Arguments.OfType<ConstantWrapper>().Any())
-                .Where(cn => cn.Arguments.OfType<ObjectLiteral>().Any())
+                .Where(cn => cn.Arguments.Take(1).OfType<ConstantWrapper>().Any()) // where first argument is the class name
                 .Where(cn =>
                 {
                     var code = cn.Children.First().Context.Code;
@@ -130,10 +149,9 @@ namespace SenchaMinify
                 .Select(cn =>
                 {
                     var className = cn.Arguments.OfType<ConstantWrapper>().First().Value.ToString();
-                    var config = cn.Arguments.OfType<ObjectLiteral>().First();
+                    var config = cn.Arguments.OfType<ObjectLiteral>().FirstOrDefault();
                     return new SenchaClass(config) { ClassName = className };
-                });
-            
+                });            
 
             foreach (var cls in extApps.Union(extDefines))
             {
@@ -154,18 +172,25 @@ namespace SenchaMinify
                     .Any()
                 );
 #if DEBUG
-            var notFoundDependencies = this.Classes
-                .SelectMany(c => c.DependencyClassNames)
-                .Where(c => !allFiles.SelectMany(f => f.Classes.Select(fc => fc.ClassName)).Contains(c))
-                .Where(cn => !cn.StartsWith("Ext"))
-                .ToList();
-
-            if (notFoundDependencies.Count > 0)
+            var missingDependencies = GetMissingDependencies(allFiles).ToList();
+            if (missingDependencies.Count > 0)
             {
-                string notFound = String.Join(", ", notFoundDependencies);
-                System.Diagnostics.Debug.WriteLine("SenchaMinify. {0}: Cannot find dependency files: {1}", this.ToString(), notFound);
+                string notFound = String.Join(", ", missingDependencies);
+                System.Diagnostics.Debug.WriteLine("SenchaMinify. {0}: Cannot find dependencies: {1}", this.ToString(), notFound);
             }
 #endif
+        }
+
+        /// <summary>
+        /// Gets a collection of dependant class names that are not found in 'allFiles' collection
+        /// </summary>
+        /// <param name="allFiles">All files in the bundle</param>
+        public virtual IEnumerable<string> GetMissingDependencies(IEnumerable<SenchaFile> allFiles)
+        {
+            return this.Classes
+                .SelectMany(c => c.DependencyClassNames)
+                .Where(c => !allFiles.SelectMany(f => f.Classes.Select(fc => fc.ClassName)).Contains(c))
+                .Where(c => !c.StartsWith("Ext."));     // may be not good if you have custom 'Ext.ux' classes
         }
     }
 }

@@ -10,16 +10,16 @@ namespace SenchaMinify
 {
     public class SenchaBundle : ScriptBundle
     {
-        public SenchaBundle(string virtualPath)
-            : this(virtualPath, null)
-        {
-
-        }
-
         public SenchaBundle(string virtualPath, string cdnPath)
             : base(virtualPath, cdnPath)
         {
             this.Orderer = new SenchaBundleOrderer();
+        }
+
+        public SenchaBundle(string virtualPath)
+            : this(virtualPath, null)
+        {
+
         }
     }
 }
