@@ -1,6 +1,6 @@
 ## About
 
-This library allows you minify ExtJS and Sencha Touch files using ASP.NET MVC engine on-the-fly.
+This library allows you to minify ExtJS and Sencha Touch files using ASP.NET MVC engine on-the-fly.
 
 ## Usage
 
